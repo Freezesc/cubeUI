@@ -8,11 +8,27 @@ import time
 import numpy as np
 import tkinter as tk
 from tkinter import *
+import pygubu
 import os
 import threading
 
 use = "DMP" #"EKF", "MADGWICK", "TRIAD", "DMP"
 ser = serial.Serial('COM5', 115200)
+
+class testUI:
+    def __init__(self):
+
+        #1: Create a builder
+        self.builder = builder = pygubu.Builder()
+
+        #2: Load an ui file
+        builder.add_from_file('testUI.ui')
+
+        #3: Create the mainwindow
+        self.mainwindow = builder.get_object('topLevelFrame')
+
+    def run(self):
+        self.mainwindow.mainloop()
 
 
 def cmd():
@@ -24,6 +40,7 @@ def cmd():
 
 
 def main():
+    video_flags = OPENGL | DOUBLEBUF
     pygame.init()
     screen = pygame.display.set_mode((640, 480), video_flags)
     pygame.display.set_caption("PyTeapot IMU orientation visualization")
@@ -258,8 +275,9 @@ def quat_to_ypr(q):
 
 if __name__ == '__main__':
     #app = Application(root)
+    '''
     root = tk.Tk()
-
+    
     embed = tk.Frame(root, width=500, height=500)  # creates embed frame for pygame window
     embed.grid(columnspan=(600), rowspan=500)  # Adds grid
     embed.pack(side=LEFT)  # packs window to the left
@@ -268,11 +286,13 @@ if __name__ == '__main__':
     buttonwin.pack(side=LEFT)
     button1 = Button(buttonwin, text='Draw', command=cmd)
     button1.pack(side=LEFT)
+    
 
     os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
     os.environ['SDL_VIDEODRIVER'] = 'windib'
-
-    video_flags = OPENGL | DOUBLEBUF
+    '''
 
     threading.Thread(target=main).start()
-    root.mainloop()
+    #root.mainloop()
+    app = testUI()
+    app.run()
