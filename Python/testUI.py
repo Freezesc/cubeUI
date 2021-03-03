@@ -12,7 +12,7 @@ import os
 import threading
 
 use = "DMP" #"EKF", "MADGWICK", "TRIAD", "DMP"
-ser = serial.Serial('COM14', 115200)
+ser = serial.Serial('COM5', 115200)
 
 
 def cmd():

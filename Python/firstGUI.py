@@ -17,13 +17,13 @@ window = Tk()
 window.title("Welcome to LikeGeeks app")
 window.geometry('350x200')
 
-'''#    Label, Button and Entry text
+#    Label, Button and Entry text
 lbl1 = Label(window, text="Hello")#, font=("Arial Bold", 14))
 lbl1.grid(column=0, row=0)
 lbl2 = Label(window, text="Click on Button")
 lbl2.grid(column=0, row=1)
 
-txt = Entry(window, width=10, state='disabled')
+txt = Entry(window, width=10)#, state='disabled')
 txt.grid(column=1, row=0)
 txt.focus()
 
@@ -33,7 +33,7 @@ def clicked():
 
 btn = Button(window, text="Click Me", command=clicked)#, bg="orange", fg="red")
 btn.grid(column=2, row=0)
-'''
+
 
 
 '''#     Selection List
