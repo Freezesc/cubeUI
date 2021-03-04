@@ -53,6 +53,7 @@ chk = Checkbutton(window, text='Choose', var=chk_state)
 chk.grid(column=0, row=0)
 '''
 
+'''
 #    Radio Button
 selected = IntVar()
 
@@ -68,7 +69,7 @@ def clicked():
    
 btn = Button(window, text="Click Me", command=clicked)
 btn.grid(column=3, row=0)
-
+'''
 
 '''#    Scrolled Text
 from tkinter import messagebox

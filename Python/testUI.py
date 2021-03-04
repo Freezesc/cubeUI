@@ -12,8 +12,13 @@ import pygubu
 import os
 import threading
 
-use = "DMP" #"EKF", "MADGWICK", "TRIAD", "DMP"
-ser = serial.Serial('COM5', 115200)
+ser = serial.Serial('COM4', 115200)
+
+eulerAngles = [0.0 for i in range(3)]
+regFactors = [0.0 for i in range(3)]
+RW = [False for i in range(4)]
+rbSel = 0
+
 
 class testUI:
     def __init__(self):
@@ -26,17 +31,49 @@ class testUI:
 
         #3: Create the mainwindow
         self.mainwindow = builder.get_object('topLevelFrame')
+        #self.rb1Axis = builder.get_object('rb1Axis')
+        #self.lblPsi = builder.get_object('lblPsi')
+        #self.btnUpdate = builder.get_object('btnUpdate')
+
+        self.enPsi = builder.get_object('enPsi')
+        self.enTheta = builder.get_object('enTheta')
+        self.enPhi = builder.get_object('enPhi')
+        self.enKp = builder.get_object('enKp')
+        self.enKi = builder.get_object('enKi')
+        self.enKd = builder.get_object('enKd')
+
+        #self.cbRW1 = builder.get_object('cbRW1')
+        self.rw1State = builder.get_variable('rw1State')
+        self.rw2State = builder.get_variable('rw2State')
+        self.rw3State = builder.get_variable('rw3State')
+        self.rw4State = builder.get_variable('rw4State')
+        self.rbVar = builder.get_variable('rbVar')
+
+        builder.connect_callbacks(self)
 
     def run(self):
         self.mainwindow.mainloop()
 
+    def cmd(self):
+        global eulerAngles
+        global regFactors
+        global RW
+        global rbSel
 
-def cmd():
-    global use
-    if use == "DMP":
-        use = "EKF"
-    else:
-        use = "DMP"
+        eulerAngles[0] = self.enPsi.get()
+        eulerAngles[1] = self.enTheta.get()
+        eulerAngles[2] = self.enPhi.get()
+        regFactors[0] = self.enKp.get()
+        regFactors[1] = self.enKi.get()
+        regFactors[2] = self.enKd.get()
+        RW[0] = self.rw1State.get()
+        RW[1] = self.rw2State.get()
+        RW[2] = self.rw3State.get()
+        RW[3] = self.rw4State.get()
+
+        rbSel = self.rbVar.get()
+
+        print(rbSel)
 
 
 def main():
@@ -54,13 +91,6 @@ def main():
 
     [omega, acc, magneto, dmp] = read_data()
     omega = [i * 250 * 2 * (np.pi / 180) / 65536 for i in omega]
-    '''
-    magneto = calMagneto.correct_Magneto(magneto)
-    if use == "EKF":
-        ekf = Kalman_EKF.System()
-    elif use == "MADGWICK":
-        mad = madgwickAHRS.MadgwickAHRS(sampleperiod=1/25, beta=0.5)
-    '''
 
     start_time = time.time()
     stop_time = time.time()
@@ -69,11 +99,6 @@ def main():
         event = pygame.event.poll()
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             break
-        '''
-        if use == "EKF":
-            ekf.predict(omega, time.time()-stop_time)
-            stop_time = time.time()
-        '''
 
         [omega, acc, magneto, dmp] = read_data()
         omega = [i * 250*2*(np.pi/180)/65536 for i in omega]
@@ -83,46 +108,20 @@ def main():
             dt = time.time()-start_time
             start_time = time.time()
             print("{:.2f}".format(data/dt), " received/s")
-            print(use)
             #print(omega, acc, magneto)
-            '''
-            if use == "EKF":
-                print(ekf.xHat[0], ekf.xHat[1], ekf.xHat[2], ekf.xHat[3])
-            elif use == "MADGWICK":
-                print(mad.quaternion[0], mad.quaternion[1],
-                      mad.quaternion[2], mad.quaternion[3])
-            elif use == "TRIAD":
-                print(filter.dcm_to_quat(filter.triad(acc, magneto)))
-            elif use == "DMP":
-            '''
+
             print(dmp[0], dmp[1], dmp[2], dmp[3])
             data = 0
-        '''
-        magneto = calMagneto.correct_Magneto(magneto)
-        '''
+
         magneto = magneto / np.linalg.norm(magneto)
         acc = acc / np.linalg.norm(acc)
-        '''
-        if use == "EKF":
-            ekf.update(acc, magneto)
-            draw(ekf.xHat[0], ekf.xHat[1], ekf.xHat[2], ekf.xHat[3])
 
-        elif use == "MADGWICK":
-            mad.update(omega, acc, magneto)
-            draw(mad.quaternion[0], mad.quaternion[1],
-                 mad.quaternion[2], mad.quaternion[3])
-
-        elif use == "TRIAD":
-            dcm = filter.triad(acc, magneto)
-            [w, nx, ny, nz] = filter.dcm_to_quat(dcm)
-            draw(w, nx, ny, nz)
-        
-        elif use == "DMP":
-        '''
         draw(dmp[0], dmp[1], dmp[2], dmp[3])
 
         pygame.display.flip()
         frames += 1
+
+        
     print("fps: %d" % ((frames * 1000) / (pygame.time.get_ticks() - ticks)))
     ser.close()
 
@@ -203,14 +202,7 @@ def draw(w, nx, ny, nz):
              "Yaw: %f, Pitch: %f, Roll: %f" % (yaw, pitch, roll), 16)
 
     #just cry here
-    if use == "EKF":
-        glRotatef(2 * math.acos(w) * 180.00 / math.pi, nx, nz, -ny)     #Checked
-    elif use == "MADGWICK":
-        glRotatef(2 * math.acos(w) * 180.00 / math.pi, nx, nz, -ny)     #Checked
-    elif use == "DMP":
-        glRotatef(2 * math.acos(w) * 180.00 / math.pi, nx, nz, -ny)     #Checked
-    else: #TRIAD
-        glRotatef(2 * math.acos(w) * 180.00 / math.pi, nx, -nz, ny)     #Checked
+    glRotatef(2 * math.acos(w) * 180.00 / math.pi, nx, nz, -ny)     #Checked
 
     glBegin(GL_QUADS)
     glColor3f(0.0, 1.0, 0.0)
@@ -274,25 +266,6 @@ def quat_to_ypr(q):
     return [yaw, pitch, roll]
 
 if __name__ == '__main__':
-    #app = Application(root)
-    '''
-    root = tk.Tk()
-    
-    embed = tk.Frame(root, width=500, height=500)  # creates embed frame for pygame window
-    embed.grid(columnspan=(600), rowspan=500)  # Adds grid
-    embed.pack(side=LEFT)  # packs window to the left
-
-    buttonwin = tk.Frame(root, width=75, height=500)
-    buttonwin.pack(side=LEFT)
-    button1 = Button(buttonwin, text='Draw', command=cmd)
-    button1.pack(side=LEFT)
-    
-
-    os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
-    os.environ['SDL_VIDEODRIVER'] = 'windib'
-    '''
-
     threading.Thread(target=main).start()
-    #root.mainloop()
     app = testUI()
     app.run()

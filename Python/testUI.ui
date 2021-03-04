@@ -21,6 +21,8 @@
         <child>
           <object class="tk.Radiobutton" id="rb1Axis">
             <property name="text" translatable="yes">1 Axis</property>
+            <property name="value">0</property>
+            <property name="variable">int:rbVar</property>
             <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
@@ -31,6 +33,8 @@
         <child>
           <object class="tk.Radiobutton" id="rb3Axis">
             <property name="text" translatable="yes">3 Axis</property>
+            <property name="value">1</property>
+            <property name="variable">int:rbVar</property>
             <layout manager="grid">
               <property name="column">1</property>
               <property name="padx">20</property>
@@ -139,8 +143,8 @@
           <property name="row">1</property>
         </layout>
         <child>
-          <object class="tk.Label" id="lblKP">
-            <property name="text" translatable="yes">KP</property>
+          <object class="tk.Label" id="lblKp">
+            <property name="text" translatable="yes">Kp</property>
             <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
@@ -151,8 +155,8 @@
           </object>
         </child>
         <child>
-          <object class="tk.Label" id="lblKI">
-            <property name="text" translatable="yes">KI</property>
+          <object class="tk.Label" id="lblKi">
+            <property name="text" translatable="yes">Ki</property>
             <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
@@ -161,8 +165,8 @@
           </object>
         </child>
         <child>
-          <object class="tk.Label" id="lblKD">
-            <property name="text" translatable="yes">KD</property>
+          <object class="tk.Label" id="lblKd">
+            <property name="text" translatable="yes">Kd</property>
             <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
@@ -171,7 +175,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Entry" id="entry4">
+          <object class="tk.Entry" id="enKp">
             <property name="text" translatable="yes">0</property>
             <layout manager="grid">
               <property name="column">1</property>
@@ -184,7 +188,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Entry" id="entry5">
+          <object class="tk.Entry" id="enKi">
             <property name="text" translatable="yes">0</property>
             <layout manager="grid">
               <property name="column">1</property>
@@ -194,7 +198,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Entry" id="entry6">
+          <object class="tk.Entry" id="enKd">
             <property name="text" translatable="yes">0</property>
             <layout manager="grid">
               <property name="column">1</property>
@@ -221,6 +225,7 @@
             <property name="compound">top</property>
             <property name="font">TkDefaultFont</property>
             <property name="text" translatable="yes">RW2</property>
+            <property name="variable">boolean:rw2State</property>
             <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
@@ -231,6 +236,7 @@
         <child>
           <object class="tk.Checkbutton" id="cbRW3">
             <property name="text" translatable="yes">RW3</property>
+            <property name="variable">boolean:rw3State</property>
             <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
@@ -241,6 +247,7 @@
         <child>
           <object class="tk.Checkbutton" id="cbRW1">
             <property name="text" translatable="yes">RW1</property>
+            <property name="variable">boolean:rw1State</property>
             <layout manager="grid">
               <property name="column">1</property>
               <property name="padx">40</property>
@@ -253,6 +260,7 @@
         <child>
           <object class="tk.Checkbutton" id="cbRW4">
             <property name="text" translatable="yes">RW4</property>
+            <property name="variable">boolean:rw4State</property>
             <layout manager="grid">
               <property name="column">1</property>
               <property name="propagate">True</property>
@@ -275,7 +283,8 @@
           <property name="sticky">nsew</property>
         </layout>
         <child>
-          <object class="tk.Button" id="buUpdate">
+          <object class="tk.Button" id="btnUpdate">
+            <property cbtype="simple" name="command" type="command">cmd</property>
             <property name="text" translatable="yes">Update</property>
             <layout manager="pack">
               <property name="pady">10</property>
