@@ -17,13 +17,14 @@ window = Tk()
 window.title("Welcome to LikeGeeks app")
 window.geometry('350x200')
 
-'''#    Label, Button and Entry text
+'''
+#    Label, Button and Entry text
 lbl1 = Label(window, text="Hello")#, font=("Arial Bold", 14))
 lbl1.grid(column=0, row=0)
 lbl2 = Label(window, text="Click on Button")
 lbl2.grid(column=0, row=1)
 
-txt = Entry(window, width=10, state='disabled')
+txt = Entry(window, width=10)#, state='disabled')
 txt.grid(column=1, row=0)
 txt.focus()
 
@@ -44,14 +45,15 @@ combo.grid(column=0, row=0)
 #combo.get()
 '''
 
-'''#     Check Button
+'''
+#     Check Button
 chk_state = BooleanVar()
 chk_state.set(True) #set check state
 chk = Checkbutton(window, text='Choose', var=chk_state)
 chk.grid(column=0, row=0)
 '''
 
-'''#    Radio Button
+#    Radio Button
 selected = IntVar()
 
 rad1 = Radiobutton(window, text='First', value=1, variable=selected)
@@ -66,7 +68,7 @@ def clicked():
    
 btn = Button(window, text="Click Me", command=clicked)
 btn.grid(column=3, row=0)
-'''
+
 
 '''#    Scrolled Text
 from tkinter import messagebox
